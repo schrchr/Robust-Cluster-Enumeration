@@ -4,7 +4,7 @@
 % epsilon = 0.2;
 % N_k = 200;
 
-function [data, r, N, K_true, mu_true, scatter_true] = data_31(N_k, epsilon)
+function [data, labels, r, N, K_true, mu_true, scatter_true] = data_31(N_k, epsilon)
 % Creates three Gaussian clusters
 % based on http://arxiv.org/pdf/1811.12337v1
 %
@@ -13,8 +13,8 @@ function [data, r, N, K_true, mu_true, scatter_true] = data_31(N_k, epsilon)
 %        epsilon - (1,1) percentage of replacement outlieres
 %
 % Outputs:
-%        data  - (N, r+1) data(:,1) includes labels from 1 to K_true+1,
-%                where K_true+1 are the outliers, data(:,2:r+1) includes the actual data points
+%        data  - (N, r+1) data
+%        labels - (N,1) true labels
 %        r - (1,1) number of features/dimensions in the generated data set
 %        N - (1,1) total number of samples in the data set
 %        K_true - (1,1) true number of clusters in the data set
@@ -61,4 +61,7 @@ function [data, r, N, K_true, mu_true, scatter_true] = data_31(N_k, epsilon)
         data_rpl = [data_rpl, rand(N_repl,1)*(out_range(ir,2) - out_range(ir,1)) + out_range(ir,1)];
     end
     data(index_repl,:) = [ones(N_repl,1)*(K_true+1), data_rpl];
+    
+    labels = data(:,1);
+    data = data(:,2:end);
 end

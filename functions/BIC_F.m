@@ -2,8 +2,7 @@ function [bic, like, pen] = BIC_F(data, S_est, mu_est, t, mem, rho, psi, eta)
 % computes the BIC of a RES distribution based on a finite sample penalty term
 %
 % Inputs:
-%        data  - (N, r+1) data(:,1) includes labels from 1 to K_true+1,
-%                 where K_true+1 are the outliers, data(:,2:r+1) includes the actual data samples
+%        data  - (N, r) data samples
 %        S_est - (r, r, ll) estimated Scatter matrix of all clusters
 %        mu_est - (r, ll) estimated mean values of all clusters
 %        t - (N, ll) squared Mahalanobis distances of data points in cluster m

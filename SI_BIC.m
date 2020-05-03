@@ -37,7 +37,7 @@ cT = 4.685;
 tic
 embic_iter = length(em_bic);
 for iMC = 1:MC
-    [data, r, N, K_true, mu_true, S_true] = data_31(N_k, epsilon);
+    [data, labels_true, r, N, K_true, mu_true, S_true] = data_31(N_k, epsilon);
     L_max = 2*K_true; % search range
 
     %% model definitions
@@ -68,7 +68,7 @@ for iMC = 1:MC
     for ii_embic = 1:embic_iter
         for ll = 1:L_max
             %% EM
-            [mu_est, S_est, t, R] = EM_RES(data(:,2:end), ll, g{em_bic(ii_embic,1)}, psi{em_bic(ii_embic,1)});
+            [mu_est, S_est, t, R] = EM_RES(data, ll, g{em_bic(ii_embic,1)}, psi{em_bic(ii_embic,1)});
             mem = (R == max(R,[],2));
 
             %% BIC
@@ -89,7 +89,7 @@ pen_avg = mean(permute(pen, [2 3 4 1]), 4);
 %% Plots
 
 figure
-plot_scatter(data, K_true, r)
+plot_scatter([labels_true data], K_true, r)
 
 marker = {'o','s','d','*','x','^','v','>','<','p','h', '+','o'};
 names = ["Finite", "Asymptotic", "Schwarz"];

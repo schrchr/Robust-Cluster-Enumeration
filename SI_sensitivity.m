@@ -1,7 +1,7 @@
 close all
 clear all
 
-addpath("figures", "result")
+addpath("functions", "result")
 
 % This file simulates the sensitivity curves.
 
@@ -45,12 +45,12 @@ eps_iter = numel(X);
 
 for ii_eps = 1:eps_iter
     for ii_mc = 1:MC
-        [data(:,:,ii_eps,ii_mc), r, N, K_true, mu_true, S_true] = data_31(N_k, 0);
+        [data(:,:,ii_eps,ii_mc), labels_true, r, N, K_true, mu_true, S_true] = data_31(N_k, 0);
 
         % replacement outlier
         N_repl = 1;
         index_repl = randperm(N,N_repl).';
-        data(index_repl,:,ii_eps,ii_mc) = [ones(N_repl,1)*(K_true+1), [X(ii_eps) Y(ii_eps)]];
+        data(index_repl,:,ii_eps,ii_mc) = [X(ii_eps) Y(ii_eps)];
     end
 end
 L_max = 2*K_true; % search range
@@ -90,7 +90,7 @@ for ii_eps = 1:eps_iter
         for iEmBic = 1:embic_iter
             for ll = 1:L_max
                 %% EM
-                [mu_est, S_est, t, R] = EM_RES(data(:,2:r+1,ii_eps,ii_mc), ll, g{em_bic(iEmBic,1)}, psi{em_bic(iEmBic,1)});
+                [mu_est, S_est, t, R] = EM_RES(data(:,:,ii_eps,ii_mc), ll, g{em_bic(iEmBic,1)}, psi{em_bic(iEmBic,1)});
                 mem = (R == max(R,[],2));
 
                 %% BIC
@@ -135,7 +135,7 @@ end
 g_names = ["Gaus", "t", "Huber", "Tukey"];
 names = ["Finite", "Asymptotic", "Schwarz"];
 p_det_2 = permute(p_det, [2 1 3]);
-[data, r, N, K_true, mu_true, S_true] = data_31(N_k, 0);
+[data, labels_true, r, N, K_true, mu_true, S_true] = data_31(N_k, 0);
 
 for iEmBic = 1:embic_iter
     for k_bic = 1:size(bic_final, 4)
@@ -144,7 +144,7 @@ for iEmBic = 1:embic_iter
         [M,c] = contour(X,Y,Z);
         c.LineWidth = 1.5;
         hold on
-        plot_scatter(data, K_true, r)
+        plot_scatter([labels_true, data], K_true, r)
         title("EM-" + g_names(em_bic(iEmBic,1)) + ", BIC-" + g_names(em_bic(iEmBic,2)) + "-" + names(k_bic))
         colorbar
         caxis([0 1])
@@ -152,7 +152,7 @@ for iEmBic = 1:embic_iter
         % save to .csv
         T = array2table([contour(X,Y,Z).']); 
         writetable(T,"result/sensitivity_EM_" + g_names(em_bic(iEmBic,1)) + "_BIC_" + g_names(em_bic(iEmBic,2))+ "_" + names(k_bic) + "_Nk_" + num2str(N_k) + "_step_" + num2str(step_eps) + "_MC_" + num2str(MC) + "_1.csv", 'Delimiter','tab')
-        T = array2table([data(:,2:3), data(:,1)]); 
+        T = array2table([data, labels_true]); 
         T.Properties.VariableNames = ["x", "y", "label"];
         writetable(T,"result/sensitivity_EM_" + g_names(em_bic(iEmBic,1)) + "_BIC_" + g_names(em_bic(iEmBic,2))+ "_" + names(k_bic) + "_Nk_" + num2str(N_k) + "_step_" + num2str(step_eps) + "_MC_" + num2str(MC) + "_2.csv", 'Delimiter','tab')
     end

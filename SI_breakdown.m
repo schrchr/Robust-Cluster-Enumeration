@@ -14,11 +14,11 @@ addpath("functions", "result");
 % number of threads
 %parpool(4); 
 % percentage of replacement outliers
-epsilon = 0:0.05:0.35;
+epsilon = 0:0.1:0.35;
 % number of data points per cluster
-N_k = 10; 
+N_k = 250; 
 % Monte Carlo iterations
-MC = 30;
+MC = 10;
 % Select combinations of EM and BIC to be simulated
 % 1: Gaussian, 2: t, 3: Huber, 4: Tukey
 em_bic = [1 1;
@@ -41,7 +41,7 @@ eps_iter = length(epsilon);
 
 for iEpsilon = 1:eps_iter
     for iMC = 1:MC
-        [data(:,:,iEpsilon,iMC), r, N, K_true, mu_true, S_true] = data_31(N_k, epsilon(iEpsilon));
+        [data(:,:,iEpsilon,iMC), labels_true, r, N, K_true, mu_true, S_true] = data_31(N_k, epsilon(iEpsilon));
     end
 end
 
@@ -86,7 +86,7 @@ for iEpsilon = 1:eps_iter
         for iEmBic = 1:embic_iter
             for ll = 1:L_max
                 %% EM
-                [mu_est, S_est, t, R] = EM_RES(data(:,2:r+1,iEpsilon,iMC), ll, g{em_bic(iEmBic,1)}, psi{em_bic(iEmBic,1)});
+                [mu_est, S_est, t, R] = EM_RES(data(:,:,iEpsilon,iMC), ll, g{em_bic(iEmBic,1)}, psi{em_bic(iEmBic,1)});
                 mem = (R == max(R,[],2));
 
                 %% BIC
