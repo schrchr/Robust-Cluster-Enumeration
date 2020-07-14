@@ -33,7 +33,7 @@ function [bic, like, pen] = BIC_F(data, S_est, mu_est, t, mem, rho, psi, eta)
     detJ = zeros(1,ll);
 
     for m = 1:ll
-        x_hat_m = data(mem(:,m), 2:end).' - mu_est(:,m);
+        x_hat_m = data(mem(:,m), :).' - mu_est(:,m);
         t_m = t(mem(:,m), m);
         J = FIM_RES(x_hat_m, t_m, S_est(:,:,m), psi, eta, D);
         detJ(m) = det(J);
